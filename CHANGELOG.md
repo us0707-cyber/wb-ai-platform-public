@@ -1,3 +1,21 @@
+# Changelog
+
+## 3.0.0-alpha.6
+
+- Added persistent schedules and scheduler worker.
+- Added interval and one-time job execution.
+- Added autopilot rules and product evaluation.
+- Added migration 0010_scheduler_autopilot.
+- Added scheduler/autopilot API and tests.
+
+
+## 3.0.0-alpha.5
+
+- Added persistent background job engine.
+- Added job API, retries, cancellation, priorities and internal worker.
+- Added analytics demo generation as a background job.
+- Added migration `0009_job_engine`.
+
 ## 3.0.0-alpha.4
 
 - Added Analytics Engine with daily fact storage.
@@ -6,8 +24,6 @@
 - Added analytics UI with period filters, SVG trend chart, forecast cards and ABC/XYZ matrix.
 - Added Alembic migration `0008_analytics_engine`.
 - Added analytics service and API tests.
-
-# Changelog
 
 ## 3.0.0-alpha.3
 

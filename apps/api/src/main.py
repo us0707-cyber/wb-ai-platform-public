@@ -14,15 +14,22 @@ from src.core.errors import install_exception_handlers
 from src.core.logging import configure_logging
 from src.database.session import engine
 from src.middleware import RequestContextMiddleware
+from src.jobs import JobWorker, SchedulerWorker
 
 configure_logging()
 logger = logging.getLogger(__name__)
+job_worker = JobWorker()
+scheduler_worker = SchedulerWorker()
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     logger.info("Starting %s in %s mode", settings.app_name, settings.app_env)
+    job_worker.start()
+    scheduler_worker.start()
     yield
+    scheduler_worker.stop()
+    job_worker.stop()
     logger.info("Stopping %s", settings.app_name)
 
 

@@ -167,3 +167,58 @@ class AnalyticsDaily(Base):
     views: Mapped[int] = mapped_column(Integer, default=0)
     clicks: Mapped[int] = mapped_column(Integer, default=0)
     stock: Mapped[int] = mapped_column(Integer, default=0)
+
+
+class Job(Base):
+    __tablename__ = "jobs"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    type: Mapped[str] = mapped_column(String(80), index=True)
+    status: Mapped[str] = mapped_column(String(20), default="pending", index=True)
+    priority: Mapped[str] = mapped_column(String(20), default="normal", index=True)
+    payload: Mapped[dict] = mapped_column(JSON, default=dict)
+    result: Mapped[dict] = mapped_column(JSON, default=dict)
+    error: Mapped[str] = mapped_column(Text, default="")
+    attempts: Mapped[int] = mapped_column(Integer, default=0)
+    max_attempts: Mapped[int] = mapped_column(Integer, default=3)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
+    started_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    cancelled_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    source_schedule_id: Mapped[int | None] = mapped_column(
+        ForeignKey("schedules.id", ondelete="SET NULL"), nullable=True, index=True
+    )
+
+
+class Schedule(Base):
+    __tablename__ = "schedules"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    name: Mapped[str] = mapped_column(String(160))
+    job_type: Mapped[str] = mapped_column(String(80), index=True)
+    payload: Mapped[dict] = mapped_column(JSON, default=dict)
+    priority: Mapped[str] = mapped_column(String(20), default="normal")
+    schedule_type: Mapped[str] = mapped_column(String(20), default="interval", index=True)
+    interval_minutes: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    next_run_at: Mapped[datetime] = mapped_column(DateTime, index=True)
+    last_run_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    enabled: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class AutopilotRule(Base):
+    __tablename__ = "autopilot_rules"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    name: Mapped[str] = mapped_column(String(160))
+    rule_type: Mapped[str] = mapped_column(String(40), index=True)
+    threshold: Mapped[float] = mapped_column(Float, default=0)
+    action_type: Mapped[str] = mapped_column(String(40), default="recommendation")
+    config: Mapped[dict] = mapped_column(JSON, default=dict)
+    enabled: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

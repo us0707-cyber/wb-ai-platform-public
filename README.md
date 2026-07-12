@@ -1,4 +1,15 @@
-# WB AI Platform 2.1
+# WB AI Platform 3.0 Alpha 6
+
+Платформа управления товарами Wildberries: каталог, AI, аналитика, фоновые задачи, расписания и правила автопилота.
+
+## Alpha 6
+
+- Scheduler с одноразовыми и интервальными расписаниями
+- автоматическое создание фоновых задач
+- правила автопилота для остатков, SEO и отрицательной прибыли
+- защита от дублирования открытых рекомендаций
+- ручной и фоновый запуск автопилота
+
 
 Платформа управления товарами Wildberries: каталог, SEO, аналитика, расчёт цен и AI-автопилот.
 
@@ -72,3 +83,23 @@ Without an API key the application remains fully functional using the local prov
 ## Analytics Engine (v3.0 Alpha 4)
 
 The platform now provides KPI overview, daily revenue/profit trends, ABC/XYZ product classification, demand forecast and stock replenishment suggestions. Use `POST /api/v1/analytics/demo/generate` to create deterministic demo history for testing.
+
+
+## Job Engine (v3.0 Alpha 5)
+
+Background operations are persisted in PostgreSQL and processed by an internal worker.
+
+Available endpoints:
+
+- `POST /api/v1/jobs`
+- `GET /api/v1/jobs`
+- `GET /api/v1/jobs/{job_id}`
+- `DELETE /api/v1/jobs/{job_id}`
+- `POST /api/v1/jobs/{job_id}/retry`
+
+Supported job types in this release:
+
+- `system.noop`
+- `analytics.seed_demo`
+
+The worker can be configured with `JOB_WORKER_ENABLED` and `JOB_WORKER_POLL_SECONDS`.

@@ -34,3 +34,8 @@ volumes from v2.1 remain compatible.
 ## Analytics subsystem
 
 `AnalyticsDaily` stores product-level daily facts. `AnalyticsRepository` handles persistence and scoped queries, while `AnalyticsService` calculates KPI summaries, time series, ABC/XYZ classes and demand forecasts. HTTP handlers are isolated in `api/v1/analytics.py`.
+
+
+## Scheduler and Autopilot
+
+`SchedulerWorker` polls due schedules and converts them into persistent `Job` records. `AutopilotService` evaluates owner-scoped products against enabled rules and creates deduplicated recommendations.
