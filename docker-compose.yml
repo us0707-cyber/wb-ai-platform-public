@@ -1,0 +1,49 @@
+name: wb-ai-platform
+
+services:
+  api:
+    build: ./apps/api
+    container_name: wb_ai_api
+    env_file: .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16
+    container_name: wb_ai_postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-wb_ai}
+      POSTGRES_USER: ${POSTGRES_USER:-wb_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-wb_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-wb_user} -d ${POSTGRES_DB:-wb_ai}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: wb_ai_redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

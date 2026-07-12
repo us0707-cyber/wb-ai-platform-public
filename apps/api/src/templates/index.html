@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{{ app_name }}</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<div class="shell">
+  <aside><h1>WB AI</h1><p>Marketplace Control Center</p><nav><button data-page="dashboard">Дашборд</button><button data-page="stores">Магазины</button><button data-page="products">Товары</button><button data-page="agents">AI-агенты</button><button data-page="analytics">Аналитика</button><button data-page="pricing">Цены</button><button data-page="autopilot">Автопилот</button><a href="/docs" target="_blank">Swagger</a></nav></aside>
+  <main>
+    <header><div><h2 id="pageTitle">Дашборд</h2><small id="status">Готов к работе</small></div><button id="logout">Выйти</button></header>
+    <section id="auth" class="card auth"><h3>Вход / регистрация</h3><input id="username" placeholder="Логин"><input id="email" placeholder="Email"><input id="password" type="password" placeholder="Пароль"><div><button id="login">Войти</button><button id="register">Регистрация</button></div><pre id="authOut"></pre></section>
+    <section id="app" hidden>
+      <div id="dashboard" class="page"><div class="grid" id="metrics"></div></div>
+      <div id="stores" class="page" hidden><div class="card"><h3>Новый магазин</h3><input id="storeName" placeholder="Название"><input id="storeToken" placeholder="WB API token"><button id="addStore">Добавить</button></div><div id="storeList"></div></div>
+      <div id="products" class="page" hidden>
+        <div class="card"><h3>Новый товар</h3>
+          <div class="form-grid">
+            <select id="productStore"></select><input id="productTitle" placeholder="Название">
+            <input id="productVendorCode" placeholder="Артикул продавца"><input id="productNmId" type="number" placeholder="Артикул WB (nmId)">
+            <input id="productBrand" placeholder="Бренд"><input id="productCategory" placeholder="Категория">
+            <input id="productPrice" type="number" min="0" step="0.01" placeholder="Цена"><input id="productStock" type="number" min="0" placeholder="Остаток">
+            <select id="productStatus"><option value="draft">Черновик</option><option value="active">Активен</option><option value="archived">Архив</option></select>
+            <input id="productImageUrl" placeholder="URL изображения">
+          </div>
+          <textarea id="productDescription" placeholder="Описание"></textarea><button id="addProduct">Добавить товар</button>
+        </div>
+        <div class="toolbar"><input id="productSearch" placeholder="Поиск по названию, бренду или артикулу"><select id="productStatusFilter"><option value="">Все статусы</option><option value="draft">Черновики</option><option value="active">Активные</option><option value="archived">Архив</option></select></div>
+        <div id="productList"></div>
+      </div>
+      <div id="agents" class="page" hidden>
+        <div class="card">
+          <h3>SEO Agent</h3>
+          <select id="agentProduct"></select>
+          <div class="form-grid">
+            <input id="seoAudience" value="покупатели Wildberries" placeholder="Целевая аудитория">
+            <select id="seoTone"><option value="продающий и информативный">Продающий</option><option value="экспертный и спокойный">Экспертный</option><option value="дружелюбный и простой">Дружелюбный</option></select>
+          </div>
+          <div class="actions">
+            <button id="generateSeo">Сгенерировать SEO</button>
+            <button id="applySeo" class="secondary">Применить к товару</button>
+            <button data-agent="keywords">Ключевые слова</button>
+            <button data-agent="competitors">Конкуренты</button>
+            <button data-agent="ads">Реклама</button>
+          </div>
+          <div id="seoResult" class="seo-result empty">Выберите товар и запустите SEO-анализ.</div>
+        </div>
+        <div class="card"><h3>История AI-запусков</h3><div id="agentHistory" class="history-list"><div class="empty">История пока пуста.</div></div></div>
+        <pre id="agentOut" hidden></pre>
+      </div>
+      <div id="analytics" class="page" hidden>
+        <div class="card analytics-toolbar">
+          <div><h3>Analytics Engine</h3><p class="muted">KPI, динамика, ABC/XYZ и прогноз запасов.</p></div>
+          <div class="actions">
+            <select id="analyticsDays"><option value="7">7 дней</option><option value="30" selected>30 дней</option><option value="60">60 дней</option><option value="90">90 дней</option></select>
+            <button id="seedAnalytics">Создать демо-историю</button><button id="refreshAnalytics" class="secondary">Обновить</button>
+          </div>
+        </div>
+        <div class="grid" id="analyticsMetrics"></div>
+        <div class="analytics-two-columns">
+          <div class="card"><h3>Выручка и прибыль</h3><div id="analyticsChart" class="analytics-chart empty">Нет исторических данных.</div></div>
+          <div class="card"><h3>Прогноз запасов</h3><div id="forecastTable" class="history-list"></div></div>
+        </div>
+        <div class="card"><h3>ABC/XYZ-анализ товаров</h3><div id="analyticsTable" class="analytics-table"></div></div>
+      </div>
+      <div id="pricing" class="page" hidden>
+        <div class="card">
+          <h3>AI Pricing</h3>
+          <select id="pricingProduct"></select>
+          <div class="pricing-grid">
+            <label>Текущая цена, ₽<input id="pricingCurrent" type="number" min="0" step="0.01" placeholder="Например, 1290"></label>
+            <label>Себестоимость, ₽<input id="pricingCost" type="number" min="0" step="0.01" placeholder="Например, 450"></label>
+            <label>Логистика, ₽/шт.<input id="pricingLogistics" type="number" min="0" step="0.01" placeholder="Например, 90"></label>
+            <label>Реклама, ₽/шт.<input id="pricingAds" type="number" min="0" step="0.01" placeholder="Например, 70"></label>
+            <label>Комиссия WB, %<input id="pricingCommission" type="number" value="15" min="0" max="100" step="0.1"></label>
+            <label>Налог, %<input id="pricingTax" type="number" value="6" min="0" max="100" step="0.1"></label>
+            <label>Рыночная цена, ₽<input id="pricingMarket" type="number" min="0" step="0.01" placeholder="Средняя цена конкурентов"></label>
+            <label>Целевая маржа, %<input id="pricingMargin" type="number" value="30" min="0" max="95" step="0.1"></label>
+          </div>
+          <div class="actions"><button id="analyzePrice">Рассчитать цену</button><button id="applyPrice" class="secondary">Применить цену</button><button id="analyzeCompetitors">Анализ конкурентов</button></div>
+          <div id="pricingResult" class="seo-result empty">Выберите товар, заполните финансовые данные и выполните расчёт.</div>
+        </div>
+      </div>
+      <div id="autopilot" class="page" hidden>
+        <div class="card"><h3>AI Автопилот</h3><div class="actions"><button id="runAutopilot">Запустить анализ</button><button id="refreshRecommendations" class="secondary">Обновить рекомендации</button></div></div><div id="recommendationList"></div>
+      </div>
+    </section>
+  </main>
+</div><script src="/static/app.js"></script>
+</body>
+</html>
